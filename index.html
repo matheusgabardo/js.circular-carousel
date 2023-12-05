@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <style>
+      .carousel .item {
+        display: block;
+        position: absolute;
+        -webkit-transform: scale(0.5);
+        -moz-transform: scale(0.5);
+        -o-transform: scale(0.5);
+        transform: scale(0.5);
+      }
+
+      .carousel .item.active {
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);
+        -o-transform: scale(1);
+        transform: scale(1);
+      }
+
+      .carousel .item.transition {
+        -webkit-transition: all 0.35s ease;
+        -moz-transition: all 0.35s ease;
+        -o-transition: all 0.35s ease;
+          transition: all 0.35s ease;
+      }
+      .row {
+        text-align: center;
+      }
+
+      .carousel {
+        left: 50%;
+        position: absolute;
+        width: 1000px;
+        margin-left: -500px;
+        overflow: hidden;
+        height: 500px;
+        top: 50px;
+      }
+
+      .carousel .item {
+        width: 350px;
+        height: 250px;
+        background: url('http://placehold.it/350x250') top left no-repeat;
+        background-size: 100%;
+        vertical-align: middle;
+        line-height: 150px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+      }
+
+      .controls {
+        position: absolute;
+        top: 500px;
+        left: 50%;
+        width: 150px;
+        margin-left: -75px;
+      }
+
+      .controls a {
+        display: block;
+      }
+
+      .controls .previous {
+        float: left;
+      }
+
+      .controls .next {
+        float: right;
+      }
+    </style>
+
+    <title>JS Circular Carousel</title>
+  </head>
+  <body>
+
+    <div class="row">
+      <ul class="carousel">
+        <li class="item active"></li>
+        <li class="item"></li>
+        <li class="item"></li>
+        <li class="item"></li>
+
+      </ul>
+    </div>
+
+    <div class="controls">
+      <a href="#" class="previous">Previous</a>
+      <a href="#" class="next">Next</a>
+    </div>
+    <!-- lib import -->
+    <script src="./circular-carousel.js"></script>
+
+    <script>
+      // start after import lib
+      document.addEventListener('DOMContentLoaded', function () {
+        var options = {
+            ovalWidth: 400,
+            ovalHeight: 50,
+            offsetX: 100,
+            offsetY: 325,
+            angle: 0,
+            activeItem: 0,
+            duration: 350,
+            className: 'item'
+          };
+
+          var carousel = CircularCarousel(options);
+
+          /* Fires when an item is about to start its activate animation */
+          carousel.on('itemBeforeActive', function (e, item) {
+            if (item && item.style) {
+              item.style.boxShadow = '0 0 20px blue';
+            }
+          });
+
+          /* Fires after an item finishes its activate animation */
+          carousel.on('itemActive', function(e, item) {
+            if (item && item.style) {
+              item.style.boxShadow = '0 0 20px green';
+            }
+          });
+          /* Fires when an active item starts its de-activate animation */
+          carousel.on('itemBeforeDeactivate', function (e, item) {
+            if (item && item.style) {
+              item.style.boxShadow = '0 0 20px yellow';
+            }
+          });
+
+          /* Fires after an active item has finished its de-activate animation */
+          carousel.on('itemAfterDeactivate', function(e, item) {
+            if (item && item.style) {
+              item.style.boxShadow = '';
+            }
+          });
+
+          /* Previous button */
+          document.querySelector('.controls .previous').addEventListener('click', function (e) {
+            carousel.cycleActive('previous');
+            e.preventDefault();
+          });
+
+          /* Next button */
+          document.querySelector('.controls .next').addEventListener('click', function (e) {
+            carousel.cycleActive('next');
+            e.preventDefault();
+          });
+
+          /* Manually click an item anywhere in the carousel */
+          var items = document.querySelectorAll('.carousel .item');
+          items.forEach(function (item) {
+            item.addEventListener('click', function (e) {
+              var index = Array.from(items).indexOf(item);
+              carousel.cycleActiveTo(index);
+              e.preventDefault();
+            });
+          });
+        });
+    </script>
+
+  </body>
+</html>
